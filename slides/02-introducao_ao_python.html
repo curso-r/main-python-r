@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Python para Ciência de Dados</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://curso-r.github.io/assets/css/padrao-curso-r.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Python para Ciência de Dados
+## Fundamentos
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+### 6 de 2022
+
+---
+
+
+
+class: middle, center
+
+# Fundamentos
+
+---
+## Por quê Python?
+
+- Python é inequivocamente uma das três linguagems de programação mais usadas no mundo.
+
+- Motivos principais:
+
+    - É uma linguagem de **propósito geral** e **multi-paradigma**
+    
+    - Comunidade grande e engajada em projetos Open Source
+    
+    - Apoio institucional do Google, que fomenta vários projetos importantes
+
+---
+## Python e você
+
+Algumas características importantes pra se ter em mente enquanto estudamos:
+
+Python é uma linguagem que foi criada para ser utilizada em **qualquer contexto**, de computação científica a desenvolvimento web. Por isso, muitas vezes as opções disponíveis para resolver um problema são do jeito que são pois representam as necessidades de várias pessoas.
+
+Embora seja uma linguagem que comporte muitos paradigmas diferentes de programação, o paradigma predominante é a Programação Orientada a Objetos ou _Object Oriented Programming_ (OOB).
+
+---
+## O que é um paradigma de programação?
+
+Um programa (ou _algoritmo_) é uma sequência de passos lógicos executáveis por um computador que transformam um input em um output. 
+
+Programação é o ato de escrever (ou desenvolver) programas.
+
+Um paradigma de programação é um **jeito de pensar** que orienta o desenvolvimento de um programa. 
+
+Boas ideias que orientam o desenvolvimento de vários programas:
+
+- Se fosse possível um programa não deveria ter partes repetidas
+
+- O código deveria ser fácil de ler. Ele não deveria estar inteiro na mesma linha por exemplo
+
+**Algumas ideias são bem específicas!**
+
+---
+
+## Exemplo: Programando um robô
+
+Ultimamente tem chovido muito no Brasil, obstruindo várias estradas com árvores caídas, carros, lama etc. 
+
+Imagine que nós somos capazes de escrever comandos para um robô gigante que pode desobstruir uma ponte.
+
+O fabricante do robô disponibiliza as funcionalidades da máquina em dois formatos, pra termos várias opções na hora de escrever.
+
+&lt;img src="https://p.turbosquid.com/ts-thumb/OM/xkaPZX/03/irongiant.1/jpg/1619522476/1920x1080/fit_q99/956db0803198d9c06c2631c2e79acc693f60cdc6/irongiant.1.jpg" width="40%" style="display: block; margin: auto;" /&gt;
+
+---
+
+## Exemplo: Programando um robô (ideia 1)
+
+No sistema do robô tem várias funções simples com ordens que podemos dar ao robô. O código de uma desobstrução poderia ser assim:
+
+
+```python
+local_bloqueado = ler_endereco(
+  'endereco_do_bloqueio_da_estrada.csv'
+  )
+
+destruir_arvores_caidas(local = local_bloqueado,
+raio = '1km')
+
+aspirar_lama(local = local_bloqueado,
+raio = '1km')
+
+secar_estrada(local = local_bloqueado,
+raio = '1km')
+```
+
+O fabricante do robô aqui nos deu comandos que combinam com o paradigma da Programação Funcional: algumas **funções** (destruir_arvores_caidas, aspirar_lama, secar_estrada) fazem o que a gente precisa que seja feito. Elas recebem como input algumas **variáveis**, o endereço até onde o robô precisa ir e o raio em que ele deve atuar.
+
+---
+
+## Exemplo: Programando um robô (ideia 2)
+
+O robô vem equipado com uma arma de raios que o fabricante considerou parecido com os poderes de um Pikachu. Por isso, o fabricante permite que a gente escreva o código que controla o robô de uma outra maneira, fazendo alusão aos poderes quem um Pikachu:
+
+
+```python
+import ModoPikachu
+# precisamos carregar o 'módulo do pikachu'
+# que o fabricante deixou pra nós
+
+RoboPikachu = ModoPikachu.iniciar()
+# aqui o robô sai do seu estado natural
+# e passa a atuar no 'modo pikachu'
+
+local_bloqueado = ler_endereco(
+  'endereco_do_bloqueio_da_estrada.csv'
+  )
+
+RoboPikachu.choque_do_trovao(local_bloqueado, raio = '1km')
+
+RoboPikachu.engolir_lama(local_bloqueado, raio = '1km')
+```
+
+---
+
+## Exemplo: Programando um robô (ideia 2)
+
+Aqui usamos OOB: tudo que escrevemos fez menção a um **objeto** real, o Robô Pikachu cujo modo foi iniciado no começo do código. Em OOB nós sempre fazemos menção às coisas que um objeto pode fazer, que são chamadas de **métodos**. Nesse paradigma nós interpretamos o nosso código como instruções para um **objeto**, como se o computador fosse ou controlasse uma entidade (pessoa, pokemon etc) com certos poderes específicos. 
+
+Pode parece uma loucura às vezes, mas para programar coisas dinâmicas como jogos, comunicação entre usuários etc a orientação a objetos é uma ferramenta interessante para expressar comandos para um computador.
+
+---
+
+## Programação Orientada a Objetos
+
+Nesse segundo exemplo surgiram algumas ideias abstratas, mas que serão importantes para darmos nossos passos no aprendizado de Python
+
+- Em Python praticamente tudo que manipulamos são **objetos** que tem certos poderes específicos, que chamamos de **métodos**. Os **métodos** de um objeto são acessados usando o `.`
+
+- Também existem **funções**, que são parecidos com objetos, mas normalmente não podem ser interpretados como "poderes" de um objeto específico, são mais parecidas com "ordens que damos ao computador".
+
+- Além de **métodos**, os objetos também carregam valores próprios, que são chamados de **atributos**
+
+---
+
+## OOB e Pokemons
+
+![](https://miro.medium.com/max/810/1*xiYI_rl-_pX_27BAjxBL3g.png)&lt;!-- --&gt;
+
+---
+
+
+## Mais justificativas: porque pensar em OOB ajuda?
+
+- Aderindo ao paradigma **OOB** com bastante fidelidade, podemos pensar no geral que:
+
+      - Várias coisas que vamos querer fazer com um objeto está nos seus métodos, isso é, como um "poder" que pode ser usado, dentre uma lista de possibilidades.
+      
+      - Alterações em um objeto podem ser feitas com relação a várias coisas, os seus atributos. Quão mais complexo for um objeto mais informações (ou atributos) ele carrega em si.
+
+- Vamos ao Python!
+
+---
+
+## Notebook e Google Collab
+
+![](img/google_collab.jpg)&lt;!-- --&gt;
+Se logue com a sua conta do Google
+
+---
+
+## Notebook e Google Collab
+
+![](img/google_collab_2.jpg)&lt;!-- --&gt;
+Clique em "Novo notebook"
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "4:3"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
