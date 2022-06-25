@@ -1,0 +1,277 @@
+---
+title: "Python para Ciência de Dados"
+subtitle: "Reticulate"
+author: "<img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>"
+date: "`r paste(lubridate::month(Sys.Date()), 'de', lubridate::year(Sys.Date()))`"
+output:
+  xaringan::moon_reader:
+    css: 
+      - "default"
+      - "default-fonts"
+      - "https://curso-r.github.io/assets/css/padrao-curso-r.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      ratio: "4:3"
+knit: pagedown::chrome_print
+---
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+
+link <- function(href, ...) {
+  htmltools::a(
+    href = href,
+    target = "_blank",
+    ...
+  )
+}
+```
+
+## Motivação
+
+- Já aprendemos muito sobre Python e sobre como configurá-lo
+
+  - Google Colab, notebooks, etc.
+
+  - Instalação local, Conda, Virtualenv, etc.
+  
+  - PyCharm, VS Code, etc.
+  
+- Mas não queremos jogar fora o nosso conhecimento de R!
+
+  - Não precisa de Conda/Virtualenv e funciona no RStudio
+  
+  - Será possível unir o útil ao agradável?
+  
+- Queremos:
+  
+  - Aproveitar código Python que já existe
+  
+  - Continuar usando R onde for mais confortável
+  
+  - Não precisar gerenciar ambientes ou trocar de IDE
+
+---
+class: middle, center, inverse
+# Introdução
+
+---
+## Reticulate
+
+- Reticulate é um pacote com todas as ferramentas necessárias para conectar
+o R com o Python
+
+  - Chamar o Python pelo R (scripts, módulos, etc.)
+  
+  - Traduzir objetos entre o R e o Python
+  
+  - Conexão direta com ambientes virtuais (Conda, Virtualenv)
+
+- Muito útil para interoperabilidade entre as duas linguagens
+
+  - Times que usam R e Python
+  
+  - Uso de funcionalidades exclusivas à outra linguagem
+  
+  - Centralização de workflows
+
+- Basta instalar!
+
+```{r, eval=FALSE}
+install.packages("reticulate")
+```
+
+---
+## Uso básico
+
+```{r}
+library(reticulate)
+
+# Inicializar o Python do sistema
+py_available(initialize = TRUE)
+
+# Verificar versão
+py_version()
+
+# Executar comando Python e pegar resultado no R
+py_eval("[1, 2, 3] + [4]")
+```
+
+---
+## Conda e Virtualenv
+
+- O reticulate é capaz de instalar o Miniconda
+
+```{r, eval=FALSE}
+install_miniconda()
+```
+
+```{r}
+# Versão do Conda instalado pelo Miniconda
+conda_version()
+```
+
+- Ele não consegue instalar o Virtualenv, mas consegue usá-lo (só no Mac e no
+Linux!)
+
+```{r}
+# Raíz onde os ambientes do Virtualenv vão ficar
+virtualenv_root()
+```
+
+---
+## Usando o ambiente virtual
+
+- Camos fazer tudo no Conda em no ambiente `r-reticulate`
+
+  - A recomendação é não desviar do padrão
+
+```{r, echo=FALSE}
+use_condaenv("r-reticulate")
+```
+
+```{r, eval=FALSE}
+# Feito uma vez só (= conda create)
+conda_create("r-reticulate")
+
+# Rodar no começo de cada sessão (= conda activate)
+use_condaenv("r-reticulate")
+
+# Instalar pacote no r-reticulate (= conda install)
+py_install("platform")
+```
+
+```{r}
+# Verificar se o pacote foi instalado
+py_module_available("platform")
+```
+
+---
+class: middle, center, inverse
+# Uso
+
+---
+## Chamando o Python
+
+- Há 4 jeitos de chamar o Python depois de feita a configuração
+
+  - Executar um arquivo inteiro com `source_python()` da mesma forma como
+  faríamos com `source()`
+  
+  - Importação direta de módulos dentro do R
+  
+  - Dentro do RMarkdown com comunicação bidirecional
+  
+  - REPL (Read, Eval, Print Loop) no Console do RStudio
+
+- Todos esses métodos usam o ambiente `r-reticulate` do Conda como padrão
+
+  - No caso de qualquer problema, a função `py_discover_config()` é sua amiga
+
+---
+## Import
+
+- A importação ocorre como no Python: um objeto com funções
+
+  - Ao invés do `.`, usamos `$`
+  
+  - A síntaxe vira uma mistura de R e Python (vide exemplo)
+  
+  - É possível criar wrappers de pacotes do Python!
+
+```{r}
+# Pegar nome da plataforma
+platform <- import("platform")
+platform$platform()
+
+# Pegar primeiro elemento de uma array do Numpy
+np <- import("numpy")
+np$array(c(1, 2, 3, 4))[0]
+```
+
+---
+## Conversões
+
+- Código em R e o que ele vira em Python
+
+  - Atenção especial aos índices! No Python eles começam em 0
+
+| Exemplo                                   | Python            |
+|:------------------------------------------|:------------------|
+| `1, 1L, TRUE, "foo"`                      | Escalar           |
+| `c(1.0, 2.0, 3.0), c(1L, 2L, 3L)`         | Lista             |
+| `list(1L, TRUE, "foo")`                   | Tupla             |
+| `list(a = 1L, b = 2.0), dict(x = x_data)` | Dicionário        |
+| `matrix(c(1,2,3,4), nrow = 2, ncol = 2)`  | NumPy ndarray     |
+| `data.frame(x = c(1,2,3))`                | Pandas DataFrame  |
+| `function(x) x + 1`                       | Função            |
+| `as.raw(c(1:10))`                         | Python bytearray  |
+| `NULL, TRUE, FALSE`                       | None, True, False |
+
+---
+## RMarkdown
+
+- Parece um truque de mágica
+
+```{python}
+# Código Python normal
+obj = [1, 2, 3]
+print(obj)
+```
+
+```{r}
+# Código R normal
+obj2 <- py$obj + 1
+print(obj2)
+```
+
+```{python}
+# Código Python normal
+r.obj2 + [5.0]
+```
+
+---
+## RMarkdown
+
+- Basta especificar a linguagem no começo do chunk
+
+  - Os objetos do Python ficam acessíveis em `py$x`
+  
+  - Os objetos do R ficam acessíveis em `r.x`
+
+```{r, echo=FALSE}
+knitr::include_graphics("img/rmarkdown_engine_zoomed.png")
+```
+
+---
+## REPL
+
+- REPL (Read, Eval, Print Loop) é o termo técnico para ferramentas como
+o "Console" que usamos no R
+
+  - Se abrirmos um arquivo Python no RStudio e rodarmos qualquer linha com
+  CTRL + ENTER, vamos ativar o REPL do Python
+  
+  - Ao invés do "`>`" tradicional, o prompt vira "`>>>`"
+  
+  - Para sair basta rodar o comando `exit` e voltaremos para o R
+  
+```{r, echo=FALSE}
+knitr::include_graphics("img/python_repl.png")
+```
+
+---
+## REPL
+
+```{r, echo=FALSE, fig.align='center'}
+knitr::include_graphics("img/resumo_pystudio.png", dpi = 275)
+```
+
+---
+## Materiais extras
+
+- [Colinha do reticulate](https://raw.githubusercontent.com/rstudio/cheatsheets/main/reticulate.pdf)
+
+- [Documentação completa do reticulate](https://rstudio.github.io/reticulate/index.html)

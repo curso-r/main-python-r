@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>Python para Ciência de Dados</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/remark-css/default.css" rel="stylesheet" />
+    <link href="libs/remark-css/default-fonts.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://curso-r.github.io/assets/css/padrao-curso-r.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+.title[
+# Python para Ciência de Dados
+]
+.subtitle[
+## Reticulate
+]
+.author[
+### <img src = 'https://d33wubrfki0l68.cloudfront.net/9b0699f18268059bdd2e5c21538a29eade7cbd2b/67e5c/img/logo/cursor1-5.png' width = '30%'>
+]
+.date[
+### 6 de 2022
+]
+
+---
+
+
+
+## Motivação
+
+- Já aprendemos muito sobre Python e sobre como configurá-lo
+
+  - Google Colab, notebooks, etc.
+
+  - Instalação local, Conda, Virtualenv, etc.
+  
+  - PyCharm, VS Code, etc.
+  
+- Mas não queremos jogar fora o nosso conhecimento de R!
+
+  - Não precisa de Conda/Virtualenv e funciona no RStudio
+  
+  - Será possível unir o útil ao agradável?
+  
+- Queremos:
+  
+  - Aproveitar código Python que já existe
+  
+  - Continuar usando R onde for mais confortável
+  
+  - Não precisar gerenciar ambientes ou trocar de IDE
+
+---
+class: middle, center, inverse
+# Introdução
+
+---
+## Reticulate
+
+- Reticulate é um pacote com todas as ferramentas necessárias para conectar
+o R com o Python
+
+  - Chamar o Python pelo R (scripts, módulos, etc.)
+  
+  - Traduzir objetos entre o R e o Python
+  
+  - Conexão direta com ambientes virtuais (Conda, Virtualenv)
+
+- Muito útil para interoperabilidade entre as duas linguagens
+
+  - Times que usam R e Python
+  
+  - Uso de funcionalidades exclusivas à outra linguagem
+  
+  - Centralização de workflows
+
+- Basta instalar!
+
+
+```r
+install.packages("reticulate")
+```
+
+---
+## Uso básico
+
+
+```r
+library(reticulate)
+
+# Inicializar o Python do sistema
+py_available(initialize = TRUE)
+```
+
+```
+## [1] TRUE
+```
+
+```r
+# Verificar versão
+py_version()
+```
+
+```
+## [1] '3.8'
+```
+
+```r
+# Executar comando Python e pegar resultado no R
+py_eval("[1, 2, 3] + [4]")
+```
+
+```
+## [1] 1 2 3 4
+```
+
+---
+## Conda e Virtualenv
+
+- O reticulate é capaz de instalar o Miniconda
+
+
+```r
+install_miniconda()
+```
+
+
+```r
+# Versão do Conda instalado pelo Miniconda
+conda_version()
+```
+
+```
+## [1] "conda 4.13.0"
+```
+
+- Ele não consegue instalar o Virtualenv, mas consegue usá-lo (só no Mac e no
+Linux!)
+
+
+```r
+# Raíz onde os ambientes do Virtualenv vão ficar
+virtualenv_root()
+```
+
+```
+## [1] "~/.virtualenvs"
+```
+
+---
+## Usando o ambiente virtual
+
+- Camos fazer tudo no Conda em no ambiente `r-reticulate`
+
+  - A recomendação é não desviar do padrão
+
+
+
+
+```r
+# Feito uma vez só (= conda create)
+conda_create("r-reticulate")
+
+# Rodar no começo de cada sessão (= conda activate)
+use_condaenv("r-reticulate")
+
+# Instalar pacote no r-reticulate (= conda install)
+py_install("platform")
+```
+
+
+```r
+# Verificar se o pacote foi instalado
+py_module_available("platform")
+```
+
+```
+## [1] TRUE
+```
+
+---
+class: middle, center, inverse
+# Uso
+
+---
+## Chamando o Python
+
+- Há 4 jeitos de chamar o Python depois de feita a configuração
+
+  - Executar um arquivo inteiro com `source_python()` da mesma forma como
+  faríamos com `source()`
+  
+  - Importação direta de módulos dentro do R
+  
+  - Dentro do RMarkdown com comunicação bidirecional
+  
+  - REPL (Read, Eval, Print Loop) no Console do RStudio
+
+- Todos esses métodos usam o ambiente `r-reticulate` do Conda como padrão
+
+  - No caso de qualquer problema, a função `py_discover_config()` é sua amiga
+
+---
+## Import
+
+- A importação ocorre como no Python: um objeto com funções
+
+  - Ao invés do `.`, usamos `$`
+  
+  - A síntaxe vira uma mistura de R e Python (vide exemplo)
+  
+  - É possível criar wrappers de pacotes do Python!
+
+
+```r
+# Pegar nome da plataforma
+platform &lt;- import("platform")
+platform$platform()
+```
+
+```
+## [1] "macOS-12.4-arm64-arm-64bit"
+```
+
+```r
+# Pegar primeiro elemento de uma array do Numpy
+np &lt;- import("numpy")
+np$array(c(1, 2, 3, 4))[0]
+```
+
+```
+## numeric(0)
+```
+
+---
+## Conversões
+
+- Código em R e o que ele vira em Python
+
+  - Atenção especial aos índices! No Python eles começam em 0
+
+| Exemplo                                   | Python            |
+|:------------------------------------------|:------------------|
+| `1, 1L, TRUE, "foo"`                      | Escalar           |
+| `c(1.0, 2.0, 3.0), c(1L, 2L, 3L)`         | Lista             |
+| `list(1L, TRUE, "foo")`                   | Tupla             |
+| `list(a = 1L, b = 2.0), dict(x = x_data)` | Dicionário        |
+| `matrix(c(1,2,3,4), nrow = 2, ncol = 2)`  | NumPy ndarray     |
+| `data.frame(x = c(1,2,3))`                | Pandas DataFrame  |
+| `function(x) x + 1`                       | Função            |
+| `as.raw(c(1:10))`                         | Python bytearray  |
+| `NULL, TRUE, FALSE`                       | None, True, False |
+
+---
+## RMarkdown
+
+- Parece um truque de mágica
+
+
+```python
+# Código Python normal
+obj = [1, 2, 3]
+print(obj)
+```
+
+```
+## [1, 2, 3]
+```
+
+
+```r
+# Código R normal
+obj2 &lt;- py$obj + 1
+print(obj2)
+```
+
+```
+## [1] 2 3 4
+```
+
+
+```python
+# Código Python normal
+r.obj2 + [5.0]
+```
+
+```
+## [2.0, 3.0, 4.0, 5.0]
+```
+
+---
+## RMarkdown
+
+- Basta especificar a linguagem no começo do chunk
+
+  - Os objetos do Python ficam acessíveis em `py$x`
+  
+  - Os objetos do R ficam acessíveis em `r.x`
+
+&lt;img src="img/rmarkdown_engine_zoomed.png" width="1912" /&gt;
+
+---
+## REPL
+
+- REPL (Read, Eval, Print Loop) é o termo técnico para ferramentas como
+o "Console" que usamos no R
+
+  - Se abrirmos um arquivo Python no RStudio e rodarmos qualquer linha com
+  CTRL + ENTER, vamos ativar o REPL do Python
+  
+  - Ao invés do "`&gt;`" tradicional, o prompt vira "`&gt;&gt;&gt;`"
+  
+  - Para sair basta rodar o comando `exit` e voltaremos para o R
+  
+&lt;img src="img/python_repl.png" width="3403" /&gt;
+
+---
+## REPL
+
+&lt;img src="img/resumo_pystudio.png" width="578" style="display: block; margin: auto;" /&gt;
+
+---
+## Materiais extras
+
+- [Colinha do reticulate](https://raw.githubusercontent.com/rstudio/cheatsheets/main/reticulate.pdf)
+
+- [Documentação completa do reticulate](https://rstudio.github.io/reticulate/index.html)
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"ratio": "4:3"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+// add `data-at-shortcutkeys` attribute to <body> to resolve conflicts with JAWS
+// screen reader (see PR #262)
+(function(d) {
+  let res = {};
+  d.querySelectorAll('.remark-help-content table tr').forEach(tr => {
+    const t = tr.querySelector('td:nth-child(2)').innerText;
+    tr.querySelectorAll('td:first-child .key').forEach(key => {
+      const k = key.innerText;
+      if (/^[a-z]$/.test(k)) res[k] = t;  // must be a single letter (key)
+    });
+  });
+  d.body.setAttribute('data-at-shortcutkeys', JSON.stringify(res));
+})(document);
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
