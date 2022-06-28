@@ -177,7 +177,7 @@ class: middle, center, inverse
 
   - Ao invés do `.`, usamos `$`
   
-  - A síntaxe vira uma mistura de R e Python (vide exemplo)
+  - A síntaxe vira uma mistura de R e Python
   
   - É possível criar wrappers de pacotes do Python!
 
@@ -188,7 +188,7 @@ platform$platform()
 
 # Pegar primeiro elemento de uma array do Numpy
 np <- import("numpy")
-np$array(c(1, 2, 3, 4))[0]
+np$array(c(1, 2, 3, 4))[1]
 ```
 
 ---
