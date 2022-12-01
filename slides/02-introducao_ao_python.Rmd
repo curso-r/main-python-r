@@ -45,6 +45,8 @@ class: middle, center
     - Comunidade grande e engajada em projetos Open Source
     
     - Apoio institucional do Google, que fomenta vários projetos importantes
+    
+    - A segunda melhor linguagem para qualquer coisa.
 
 ---
 ## Python e você
@@ -74,74 +76,37 @@ Boas ideias que orientam o desenvolvimento de vários programas:
 
 ---
 
-## Exemplo: Programando um robô
+## Exemplo: Manipulando strings (ideia 1)
 
-Ultimamente tem chovido muito no Brasil, obstruindo várias estradas com árvores caídas, carros, lama etc. 
+```{r, eval = TRUE}
+library(stringr)
+minha_string = "hello world"
 
-Imagine que nós somos capazes de escrever comandos para um robô gigante que pode desobstruir uma ponte.
+str_to_upper(minha_string)
+str_replace(minha_string, "hello", "olá")
 
-O fabricante do robô disponibiliza as funcionalidades da máquina em dois formatos, pra termos várias opções na hora de escrever.
+```
 
-```{r, echo = FALSE, out.width="40%", fig.align='center'}
-knitr::include_graphics("https://p.turbosquid.com/ts-thumb/OM/xkaPZX/03/irongiant.1/jpg/1619522476/1920x1080/fit_q99/956db0803198d9c06c2631c2e79acc693f60cdc6/irongiant.1.jpg")
+Essa é uma interface que combina com o paradigma da programação funcional.
+Alguma funções transformam os dados de entrada para o formato que precisamos.
+
+---
+
+## Exemplo: Manipulando strings (ideia 2)
+
+```{python, eval = TRUE}
+minha_string = "hello world"
+print(minha_string.upper())
+print(minha_string.replace("hello", "olá"))
 ```
 
 ---
 
-## Exemplo: Programando um robô (ideia 1)
+## Exemplo: Manipulando strings (ideia 2)
 
-No sistema do robô tem várias funções simples com ordens que podemos dar ao robô. O código de uma desobstrução poderia ser assim:
+Aqui usamos OOB: tudo que escrevemos fez menção a um **objeto** real, a string que queremos manipular e que foi incializada no início do código. 
 
-```{python, eval = FALSE}
-
-local_bloqueado = ler_endereco(
-  'endereco_do_bloqueio_da_estrada.csv'
-  )
-
-destruir_arvores_caidas(local = local_bloqueado,
-raio = '1km')
-
-aspirar_lama(local = local_bloqueado,
-raio = '1km')
-
-secar_estrada(local = local_bloqueado,
-raio = '1km')
-
-```
-
-O fabricante do robô aqui nos deu comandos que combinam com o paradigma da Programação Funcional: algumas **funções** (destruir_arvores_caidas, aspirar_lama, secar_estrada) fazem o que a gente precisa que seja feito. Elas recebem como input algumas **variáveis**, o endereço até onde o robô precisa ir e o raio em que ele deve atuar.
-
----
-
-## Exemplo: Programando um robô (ideia 2)
-
-O robô vem equipado com uma arma de raios que o fabricante considerou parecido com os poderes de um Pikachu. Por isso, o fabricante permite que a gente escreva o código que controla o robô de uma outra maneira, fazendo alusão aos poderes quem um Pikachu:
-
-```{python, eval = FALSE}
-
-import ModoPikachu
-# precisamos carregar o 'módulo do pikachu'
-# que o fabricante deixou pra nós
-
-RoboPikachu = ModoPikachu.iniciar()
-# aqui o robô sai do seu estado natural
-# e passa a atuar no 'modo pikachu'
-
-local_bloqueado = ler_endereco(
-  'endereco_do_bloqueio_da_estrada.csv'
-  )
-
-RoboPikachu.choque_do_trovao(local_bloqueado, raio = '1km')
-
-RoboPikachu.engolir_lama(local_bloqueado, raio = '1km')
-
-```
-
----
-
-## Exemplo: Programando um robô (ideia 2)
-
-Aqui usamos OOB: tudo que escrevemos fez menção a um **objeto** real, o Robô Pikachu cujo modo foi iniciado no começo do código. Em OOB nós sempre fazemos menção às coisas que um objeto pode fazer, que são chamadas de **métodos**. Nesse paradigma nós interpretamos o nosso código como instruções para um **objeto**, como se o computador fosse ou controlasse uma entidade (pessoa, pokemon etc) com certos poderes específicos. 
+Em OOB nós sempre fazemos menção às coisas que um objeto pode fazer, que são chamadas de **métodos**. Nesse paradigma nós interpretamos o nosso código como instruções para um **objeto**, como se o computador fosse ou controlasse uma entidade com certas funcionalidades específicas. 
 
 Pode parece uma loucura às vezes, mas para programar coisas dinâmicas como jogos, comunicação entre usuários etc a orientação a objetos é uma ferramenta interessante para expressar comandos para um computador.
 
@@ -159,15 +124,6 @@ Nesse segundo exemplo surgiram algumas ideias abstratas, mas que serão importan
 
 ---
 
-## OOB e Pokemons
-
-```{r, echo = FALSE}
-knitr::include_graphics("https://miro.medium.com/max/810/1*xiYI_rl-_pX_27BAjxBL3g.png")
-```
-
----
-
-
 ## Mais justificativas: porque pensar em OOB ajuda?
 
 - Aderindo ao paradigma **OOB** com bastante fidelidade, podemos pensar no geral que:
@@ -177,21 +133,3 @@ knitr::include_graphics("https://miro.medium.com/max/810/1*xiYI_rl-_pX_27BAjxBL3
       - Alterações em um objeto podem ser feitas com relação a várias coisas, os seus atributos. Quão mais complexo for um objeto mais informações (ou atributos) ele carrega em si.
 
 - Vamos ao Python!
-
----
-
-## Notebook e Google Collab
-
-```{r, echo = FALSE}
-knitr::include_graphics("img/google_collab.jpg")
-```
-Se logue com a sua conta do Google
-
----
-
-## Notebook e Google Collab
-
-```{r, echo = FALSE}
-knitr::include_graphics("img/google_collab_2.jpg")
-```
-Clique em "Novo notebook"

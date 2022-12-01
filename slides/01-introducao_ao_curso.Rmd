@@ -36,29 +36,26 @@ class: middle, center
 ---
 ## Cronograma
 
-- **Aula 1**: 06 de junho
+- **Aula 1**: 
   - Introdução e conceitos básicos
 
-- **Aula 2**: 09 de junho
-  - Arrays, Listas, Dict, numpy e Introdução ao Pandas
+- **Aula 2**: 
+  - Arrays, numpy e Introdução ao Pandas
   
-- **Aula 3**: 13 de junho
+- **Aula 3**: 
   - Pandas I
   
-- **Aula 4**: 16 de junho
+- **Aula 4**:
   - Pandas II
 
 ---
 
 ## Cronograma
 
-- **Aula 5**: 20 de junho
-  - Pandas III (valores faltantes) e instalação
-  
-- **Aula 6**: 23 de junho
+- **Aula 5**: 
   - Introdução à visualização de dados e o pacote seaborn
 
-- **Aula 7**: 27 de junho
+- **Aula 6**:
   - R + Python
   
 ---
