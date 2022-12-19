@@ -1,0 +1,47 @@
+---
+title: "Minha análise de dados do IMDB"
+---
+
+```{python}
+#| echo: false
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+```
+
+```{python}
+#| echo: false
+imdb = pd.read_csv("../dados/imdb.csv")
+```
+
+Vamos fazer um gráfico sobre a distribuiçõa de notas do IMDB.
+
+```{python}
+#| echo: false
+#| fig-cap: "Distribuição de notas do IMDB"
+#| fig.height: 4
+plt.rcParams['figure.figsize'] = [8, 4]
+notas_por_ano = imdb.groupby("ano", as_index=False).agg(
+    nota_media = ("nota_imdb", "mean")
+).query("ano > 1930")
+sns.lineplot(notas_por_ano, x="ano", y="nota_media")
+plt.xlabel("Ano")
+plt.ylabel("Nota média")
+plt.show()
+```
+
+```{python}
+#| echo: false
+#| fig-cap: "Distribuição de notas dos filmes de Steven Spielberg"
+#| fig-out-width: "100%"
+lucro_spielberg = (imdb.
+    query("direcao=='Steven Spielberg'").
+    assign(lucro=lambda x: x.receita-x.orcamento)
+    )
+sns.histplot(data=lucro_spielberg, x="lucro", bins=5)
+plt.show()
+```
+
+
+

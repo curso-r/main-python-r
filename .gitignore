@@ -5,3 +5,6 @@
 .DS_Store
 dados/x.csv
 dados/x.pickle
+env
+notebooks/06-quarto.html
+notebooks/06-quarto_files/*
